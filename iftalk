@@ -1,0 +1,601 @@
+#!/usr/bin/env bash
+
+function adventure()
+{
+
+cat <<END
+Scrawled on the notecard is a bulleted list with some factoids about the
+foundational game in Interactive Fiction:
+
+* Colossal Cave Adventure (1976)
+* Originally by Will Crowther
+* Based on D&D and real caves
+* Expanded by Don Woods (1977)
+* Narrative descriptions and puzzles
+* Power of text + imagination
+* Classic hacker tidbits:
+  - get lamp, "twisty little passages", xyzzy
+
+END
+
+}
+
+function zork()
+{
+
+cat <<END
+Written in a smudgy pencil are the following words that might, with some
+help from a presenter, describe the basics of Zork:
+
+* Directly inspired by ADVENT
+* Written by MIT students (1979)
+* Go into a mysterious cave to collect treasures
+* Zork -- unfinished program name at MIT
+* Original final name: DUNGEON
+* Split into three pieces for home PCs
+* Classic hacker tidbits:
+  - grues, FrobozzCo, zorkmids
+
+END
+
+}
+
+function eighties()
+{
+
+
+cat <<END
+This dog-eared card has a bulleted list written in red ink. It describes
+IF in the 1980s.
+
+* IF very popular
+* First IF game co. Adventure Intl' (1978)
+* Others: Infocom, Synapse Software, Acornsoft, Telaium/Trillium
+  Magnetic Scrolls, Legend Entertainment and Level 9 Computing
+* Simple format / broad appeal
+* Magazines with type-in listings
+
+END
+
+}
+
+function infocom()
+{
+
+cat <<END
+This wrinkled notecard is double sided and describes the history of
+Infocom. On the front, it says:
+
+* Founded by MIT students (1979)
+* ... to sell Zork and other games
+* Advanced Interpreter (full sentences)
+* Super cool packaging/DRM (“feelies”)
+* Z-machine architecture super portable
+* Rock stars of game industry (1983-1984)
+* ~30+ games
+
+And on the back it says:
+* Failed diversification effort lost money and jobs
+* Bought by Activision in 1986
+* Shut down in 1989
+* Trademark abandoned in 2002
+
+END
+
+}
+
+function playing()
+{
+
+cat <<END
+This notecard describes the basic aspects of playing IF games:
+
+* Compass directions: n,s,e,w
+* Mapping
+* Inventory
+* NLP inteface: verbs and nouns, sentences
+* Constraints (batteries, food, time)
+* Actions change game world
+* Identifying keywords from text
+* Clever solutions to puzzles
+
+END
+
+}
+
+function platforms()
+{
+
+cat <<END
+Strangely, this notecard (discussing platforms for IF) is typewritten:
+* Z-machine interpreters for many platforms
+  - write the interpreter, get many games
+* Players need an interpreter and game data
+* Most games are easily available online
+* Linux/Unix: frotz, jzip, xzip
+* Android: Text Fiction (and others)
+* iOS: Frotz (and others)
+* Play on web: http://textadventures.co.uk
+
+END
+
+}
+
+function later()
+{
+
+cat <<END
+This notecard, stained with tears of both pain and joy, describes the
+later history of IF to the present:
+
+* Popularity declined in the late 80s
+* Commercial era mostly ended by the 90s
+* Some experimentation with graphical text adventures (?)
+* Internet: MUDs / MOOs / MUSH / MUCK
+* Hobbyist / open source continues
+* Annual IF competition
+* Modern: classic advs, genre subversions, creative works
+* Commercial era is over, but innovation continues
+
+END
+
+}
+
+function readme()
+{
+
+cat <<END
+This notecard contains references for further reading:
+
+* Get Lamp documentary:
+  - http://www.getlamp.com/
+  - https://www.youtube.com/watch?v=LRhbcDzbGSU
+* Book: Twisty Little Passages by Nick Montfort
+* Develop your own IF
+  - Don't write a 500-line bash script like this one!
+  - Inform7.com
+  - www.tads.org
+
+
+END
+
+}
+
+
+function look_closet()
+{
+cat <<END
+Heller Hall 329 Closet
+
+You're standing in an extremely small closet. It is empty.
+
+END
+
+if [[ $closet_open == 1 ]]
+then
+	echo "The closet door is open."
+else
+	echo "The closet door is closed."
+fi
+
+}
+
+function room()
+{
+
+cat << END
+Heller Hall 329
+
+You are standing in a professor's office in the Computer Science
+department at UMD. The office is messy, with papers and electronic cruft
+strewn about. On the desk is a pencil and a stack of notecards that are
+labeled: ADVENTURE, ZORK, EIGHTIES, INFOCOM, PLAYING, LATER, PLATFORMS
+and README. There is a portable video player, a floppy disk, and an old
+computer next to the notecards.  There is a closet, and to the west is
+an open doorway.
+
+END
+
+if [[ $closet_opened == 1 ]]
+then
+	
+cat << END
+There is a huge mess of nondescript detritus all over the floor.
+
+END
+
+fi
+
+if [[ $closet_open == 1 ]]
+then
+
+cat << END
+The closet door is open.
+
+END
+
+fi
+
+cat << END
+What do you want to do?
+
+END
+
+}
+
+function look_computer()
+{
+
+cat <<END
+This is an old home computer from the 1980s. It has a power switch you
+can turn on and off, and a floppy disk drive.
+
+END
+
+if [[ $disk_in_drive == 1 ]]
+then
+	echo "There is a floppy disk in the drive."
+	echo
+fi
+
+if [[ $powered_on == 1 ]]
+then
+	echo "The computer is on."
+	echo
+fi
+
+}
+
+function closet()
+{
+
+closet_open=1
+
+if [[ $closet_opened == 0 ]]
+then
+closet_opened=1
+cat <<END
+You open the door, and an avalanche of junk falls out and spreads
+across the floor.
+
+END
+else
+cat <<END
+You open the closet door. The closet is empty.
+
+END
+fi
+
+
+}
+
+function boot_computer()
+{
+echo "You turn the computer on. It whirs to life and the monitor lights up."
+sleep 2
+echo "The computer beeps and the floppy drive light turns on and off."
+sleep 2
+}
+
+function parse()
+{
+	grep -Ei "$1" <<<$ACT &> /dev/null
+}
+
+function parse_read()
+{
+	grep -Ei "((l(ook)?)|(ex(amine)?) )?$1" <<<$ACT &> /dev/null
+}
+
+
+in_closet=0
+closet_open=0
+closet_opened=0
+disk_in_drive=0
+powered_on=0
+
+echo
+
+room
+
+while true
+do
+
+	echo -n "> "
+
+	read ACT
+
+	if parse "watch|watch video|video|look player|ex(amine)? player|look video"
+	then
+
+		totem https://lars.d.umn.edu/iftalk/text_fiction_zork.mp4 --fullscreen
+
+	elif parse "take |get "
+	then
+		echo "Your inventory is full."
+		echo
+
+	elif parse "take|get"
+	then
+		echo "Take what?"
+		echo
+
+	elif parse_read "pencil"
+	then
+		echo "It is a well-worn Pentel GraphGear 500."
+		echo
+
+	elif parse_read "(electronic )?cruft"
+	then
+		echo "Just some old junk that's not worth describing."
+		echo
+
+	elif parse_read "advent(ure)?"
+	then
+
+		adventure
+
+	elif parse_read "zork"
+	then
+		
+		zork
+
+	elif parse_read "eighties"
+	then
+
+		eighties
+
+	elif parse_read "infocom"
+	then
+
+		infocom
+
+	elif parse_read "playing"
+	then
+
+		playing
+
+	elif parse_read "platforms"
+	then
+
+		platforms
+
+	elif parse_read "later"
+	then
+
+		later
+
+	elif parse_read "readme"
+	then
+
+		readme
+	
+	elif parse_read "(old )?computer"
+	then
+
+		look_computer
+	
+
+	elif parse "((put)|(insert)|(place)) disk"
+	then
+		if [[ $disk_in_drive == 0 ]]
+		then
+			echo "You insert the disk into the computer and close the door."
+			echo
+			disk_in_drive=1
+		else
+			echo "The disk is already in the drive."
+			echo
+		fi
+
+
+	elif parse "((remove)|(get)|(take)|(eject)) disk"
+	then
+		if [[ $disk_in_drive == 1 ]]
+		then
+			echo "You open the door and carefully remove the disk from the drive."
+			echo
+			disk_in_drive=0
+		else
+			echo "The disk is on the desk!"
+			echo
+		fi
+
+	elif parse_read "((disk(ette)?)|(floppy))"
+	then
+		if [[ $disk_in_drive == 1 ]]
+		then
+			echo "You remove the disk from the drive."
+			echo
+			disk_in_drive=0
+		fi
+
+		echo "This well-worn 5 1/4 floppy has a label:"
+		echo "  ZORK: The Great Underground Empire"
+		echo
+
+
+	elif parse "((turn( computer)? on)|(flip switch))"
+	then
+
+		boot_computer
+
+		if [[ $disk_in_drive == 1 ]]
+		then
+
+			sleep 2
+			echo "A program appears to be loading!"
+			sleep 2
+			jzip ZORK1.DAT
+
+			sleep 2
+			echo "You turn the computer off."
+
+		else [[ $disk_in_drive == 0 ]]
+
+			echo "The computer displays the words: ? PLEASE INSERT DISK"
+			sleep 2
+			echo
+			echo "You turn the computer off."
+		fi
+
+	elif parse "((enter)|(go into)|(go to)) closet"
+	then
+		if [[ $closet_open == 0 ]]
+		then
+			echo "The closet door is closed."
+			echo
+		else 
+			echo "You step into the closet."
+			echo
+			in_closet=1
+			look_closet
+		fi
+	
+	elif parse "((leave)|(exit)) closet"
+	then
+		if [[ $in_closet == 1 ]]
+		then
+			if [[ $closet_open == 0 ]]
+			then
+				echo "The closet door is closed."
+				echo
+				continue
+			else 
+
+				in_closet=0
+				echo "You leave the closet."
+				echo 
+				room
+			fi
+		else
+			echo "You aren't standing in the closet."
+			echo 
+		fi
+
+	elif parse "((open closet( door)?)|(open door))"
+	then
+		if [[ $closet_open == 0 ]]
+		then
+			closet
+		else
+			echo "The closet door is already open."
+			echo
+		fi
+	
+	elif parse "((close closet( door)?)|(close door))"
+	then
+
+		if [[ $closet_open == 1 ]]
+		then
+			echo "You close the closet door."
+			echo 
+			if [[ $in_closet == 1 ]]
+			then
+				echo "I hope you're not claustrophobic!"
+			fi
+			closet_open=0
+		else
+			echo "The closet door is closed."
+			echo
+		fi
+
+	elif parse "closet"
+	then
+		echo "What about the closet?"
+		echo
+
+	elif parse "(^close)"
+	then
+		echo "Close what?"
+		echo
+
+	elif parse "(^open)"
+	then
+		echo "Open what?"
+		echo
+
+	elif parse "(clean)|(pick up)"
+	then
+		echo "You don't have the energy to do that."
+		echo
+
+	elif parse_read "papers"
+	then
+		echo "There's nothing interesting about the papers."
+		echo "On the other hand, the notecards look VERY interesting!"
+		echo 
+
+	elif [[ $in_closet == 0 ]] && parse "(^(go )?w(est)?)$|(leave)|(exit)|(quit)"
+	then
+		echo "You leave the office."
+		echo "THE END."
+		echo
+		exit 0
+
+	elif [[ $in_closet == 1 ]] && parse "((leave)|(exit))"
+	then
+		if [[ $closet_open == 1 ]]
+		then
+			in_closet=0
+			echo "You walk out of the closet."
+			echo
+		else
+			echo "The closet door is closed. Who are you, Kitty Pryde?"
+			echo 
+		fi
+
+
+	elif parse "^l(ook)?"
+	then
+		if [[ $in_closet == 0 ]]
+		then
+			room
+		else
+			look_closet
+		fi
+
+	elif parse "^help"
+	then
+		echo "Common commands include: go (n/s/e/w), look, examine, read, take, drop"
+		echo "get, put, open, close, inventory"
+		echo
+
+	elif parse "ex(amine)"
+	then
+		echo "Examine what?"
+		echo
+
+	elif parse "^(show )?i$|inv(entory)?"
+	then
+		echo "You are carrying:"
+		echo "  An elvish sword of great antiquity"
+		echo
+
+	elif parse "drop (elvish )?sword( of great antiquity)?"
+	then
+		echo "You'd have to be crazy to get rid of this sword."
+		echo
+
+	elif parse_read "sword"
+	then
+		echo "This two-handed sword looks extremely sharp."
+		echo
+
+	elif parse "drop"
+	then
+		echo "Drop what?"
+		echo
+
+	elif parse "n(orth)?|s(outh)?|e(ast)?"
+	then
+		echo "You can't go that way."
+		echo
+
+	else
+		echo "I didn't understand you. Please use simple commands."
+		echo "Unlike Infocom's parser, I'm not very good."
+		echo 
+	fi
+
+done
